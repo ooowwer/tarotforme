@@ -1,213 +1,555 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的資安研究站</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>一站式塔羅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<style>
+/* Layout: one centred column. Each step is a framed plate with a Roman numeral on top, like a Major Arcana card. */
+:root{
+  --bg:#ECEEF4;
+  --surface:#F8F9FC;
+  --ink:#1A1F3A;
+  --muted:#566083;
+  --line:#C7CCDD;
+  --primary:#20285A;
+  --on-primary:#F6F3E8;
+  --gold:#8A5E12;
+  --foil:#D6AB55;
+  --back:#20285A;
+  --shadow:rgba(26,31,58,.30);
+  --font-display:"Marcellus","Noto Serif TC",serif;
+  --font-head:"Noto Serif TC","Marcellus",serif;
+  --font-body:"Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1020;
+    --surface:#161A33;
+    --ink:#ECEAF5;
+    --muted:#A0A7C9;
+    --line:#2B3158;
+    --primary:#E0B258;
+    --on-primary:#151830;
+    --gold:#E0B258;
+    --back:#232B66;
+    --shadow:rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1020;
+  --surface:#161A33;
+  --ink:#ECEAF5;
+  --muted:#A0A7C9;
+  --line:#2B3158;
+  --primary:#E0B258;
+  --on-primary:#151830;
+  --gold:#E0B258;
+  --back:#232B66;
+  --shadow:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            min-height: 100vh;
-        }
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font:16px/1.6 var(--font-body);
+  padding-inline:16px;
+  padding-block:20px 44px;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:30rem;margin-inline:auto;display:flex;flex-direction:column;gap:16px}
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 60px 20px;
-        }
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:40px}
+.top h1{margin:0;font-family:var(--font-head);font-size:1.15rem;font-weight:700;letter-spacing:.06em;display:flex;align-items:baseline;gap:10px;min-width:0}
+.top h1 small{font-family:var(--font-display);font-weight:400;font-size:.8rem;letter-spacing:.3em;color:var(--gold)}
+.linkbtn{border:0;background:none;color:var(--muted);font:inherit;font-size:.875rem;min-height:40px;padding:0 4px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.linkbtn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.steps{display:flex;justify-content:center;gap:6px;list-style:none;margin:0;padding:0;font-family:var(--font-display)}
+.steps li{min-width:2.6rem;text-align:center;padding:2px 6px;border-bottom:2px solid transparent;color:var(--muted);font-size:1rem;letter-spacing:.08em}
+.steps li.done{color:var(--gold)}
+.steps li[aria-current="step"]{color:var(--ink);border-bottom-color:var(--gold)}
 
-        header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
+/* plate */
+.panel{
+  background:var(--surface);
+  border:1px solid var(--gold);
+  border-radius:6px;
+  padding:26px 20px 24px;
+  box-shadow:inset 0 0 0 5px var(--surface),inset 0 0 0 6px var(--line);
+}
+.plate{display:flex;align-items:center;justify-content:center;gap:14px;font-family:var(--font-display);color:var(--gold);font-size:1.4rem;letter-spacing:.2em;padding-left:.2em}
+.plate::before,.plate::after{content:"";flex:1;max-width:4rem;height:1px;background:var(--line)}
+.panel h2{font-family:var(--font-head);font-weight:700;font-size:1.6rem;text-align:center;margin:8px 0 4px;text-wrap:balance}
+.panel h2:focus{outline:none}
+.lead{text-align:center;color:var(--muted);margin:0 0 18px;text-wrap:balance}
 
-        .avatar {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid #0f3460;
-            margin-bottom: 20px;
-            background: #0f3460;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 60px;
-        }
+/* step 1 */
+.opts{border:0;padding:0;margin:0;min-width:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.opt{border:1px solid var(--line);border-radius:4px;background:var(--surface);position:relative}
+.opt input[type=radio]{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.opt.sel{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);background:color-mix(in srgb,var(--gold) 12%,var(--surface))}
+.opt:has(input:focus-visible){outline:3px solid var(--gold);outline-offset:2px}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:92px;padding:12px 8px;cursor:pointer}
+.tile .big{font-family:var(--font-display);font-size:2.5rem;line-height:1.1}
+.tile .unit{font-size:.85rem;color:var(--muted)}
+.custom{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 12px;padding:12px 14px}
+.clabel{position:relative;display:block;font-weight:500;padding-block:10px;min-width:3.5rem}
+.stepper{display:flex;align-items:center;gap:6px;min-width:0}
+.stepper button{width:44px;height:44px;flex:none;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);font:inherit;font-size:1.5rem;line-height:1;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.stepper button:active{background:var(--line)}
+.stepper button:focus-visible,.stepper input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.stepper input{width:6.5ch;min-width:0;height:44px;text-align:center;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);font-family:var(--font-display);font-size:1.4rem;font-variant-numeric:tabular-nums}
+.stepper .unit{color:var(--muted);font-size:.875rem;padding-left:2px}
+.note{min-height:1.6em;font-size:.875rem;color:var(--muted);margin:10px 0 0}
 
-        h1 {
-            color: #e94560;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
+/* buttons */
+.actions{display:grid;gap:10px;margin-top:20px}
+.actions.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.btn{min-height:50px;padding:10px 18px;border-radius:4px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font:inherit;font-weight:700;font-size:1rem;letter-spacing:.04em;cursor:pointer;touch-action:manipulation}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--gold)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.btn:active:not(:disabled){transform:translateY(1px)}
 
-        .tagline {
-            color: #a0a0a0;
-            font-size: 1.2em;
-        }
+/* step 2: deck */
+.deck{position:relative;width:100%;height:216px;margin-top:4px;overflow:hidden}
+.back{position:absolute;left:50%;top:12px;width:112px;height:192px;margin-left:-56px;transform:translate(var(--tx),var(--ty)) rotate(var(--r));filter:drop-shadow(0 3px 5px var(--shadow))}
+.back svg{display:block;width:100%;height:100%}
+.bk{fill:var(--back)}
+.gl{fill:none;stroke:var(--foil);stroke-width:1.3}
+.gl.thin{stroke-width:.7}
+.gf{fill:var(--foil)}
+.deck.shuffling .back{animation:riffle .8s ease-in-out both;animation-delay:calc(var(--i)*45ms)}
+@keyframes riffle{
+  0%,100%{transform:translate(var(--tx),var(--ty)) rotate(var(--r))}
+  35%{transform:translate(calc(var(--tx) + var(--sx)),var(--ty)) rotate(calc(var(--r) + 7deg))}
+  70%{transform:translate(calc(var(--tx) - var(--sx)),var(--ty)) rotate(calc(var(--r) - 6deg))}
+}
+.count{text-align:center;margin:10px 0 0;color:var(--muted)}
+.count b{font-family:var(--font-display);font-weight:400;font-size:1.4rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.rule{text-align:center;font-size:.85rem;color:var(--muted);margin:4px 0 0}
 
-        .section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+/* step 3: cut */
+.spin{display:grid;place-items:center;width:11rem;max-width:100%;height:7rem;margin:6px auto 0;background:var(--surface);border:1px solid var(--gold);border-radius:4px;box-shadow:inset 0 0 0 4px var(--surface),inset 0 0 0 5px var(--line)}
+.spin span{font-family:var(--font-display);font-size:3.6rem;line-height:1;font-variant-numeric:tabular-nums}
+.spin.locked{border-width:2px}
+.spin.locked span{color:var(--gold)}
+.cut-msg{text-align:center;min-height:3.2em;margin:14px 0 0;color:var(--muted);text-wrap:balance}
 
-        h2 {
-            color: #e94560;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #0f3460;
-        }
+/* step 4: draw */
+.recap{text-align:center;color:var(--muted);font-size:.875rem;margin:-10px 0 14px}
+.spread{margin:20px 0 0;padding-inline-start:2.4rem}
+.spread:empty{display:none}
+.spread li{padding:10px 0;border-bottom:1px solid var(--line);animation:rise .25s ease-out both}
+.spread li::marker{font-family:var(--font-display);color:var(--gold);font-size:1.1rem}
+.row{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px}
+.nm{min-width:0;overflow-wrap:anywhere}
+.zh{font-weight:700;font-size:1.05rem}
+.en{font-family:var(--font-display);color:var(--muted)}
+.pos{flex:none;font-size:.8rem;line-height:1.5;padding:1px 10px;border:1px solid var(--gold);border-radius:999px;color:var(--gold)}
+.pos.rev{background:var(--gold);color:var(--surface)}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.copybox{width:100%;margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);font:inherit;font-size:.9rem;resize:vertical}
 
-        p {
-            color: #d0d0d0;
-            margin-bottom: 15px;
-        }
+@media (prefers-reduced-motion:reduce){
+  .deck.shuffling .back{animation:none}
+  .spread li{animation:none}
+  .btn:active:not(:disabled){transform:none}
+}
+</style>
 
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+<div class="wrap">
+  <div class="top">
+    <h1>一站式塔羅 <small>TAROT</small></h1>
+    <button type="button" class="linkbtn" id="restart" hidden>重新開始</button>
+  </div>
 
-        .skill-tag {
-            background: #0f3460;
-            color: #e94560;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
-        }
+  <ol class="steps" id="steps" aria-label="進度">
+    <li aria-label="第 1 步">I</li>
+    <li aria-label="第 2 步">II</li>
+    <li aria-label="第 3 步">III</li>
+    <li aria-label="第 4 步">IV</li>
+  </ol>
 
-        .links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .links a {
-            color: #e94560;
-            text-decoration: none;
-            padding: 12px 24px;
-            border: 2px solid #e94560;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .links a:hover {
-            background: #e94560;
-            color: #1a1a2e;
-        }
-
-        .project {
-            background: rgba(15, 52, 96, 0.5);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .project h3 {
-            color: #e94560;
-            margin-bottom: 10px;
-        }
-
-        .project p {
-            margin-bottom: 0;
-            font-size: 0.95em;
-        }
-
-        footer {
-            text-align: center;
-            color: #666;
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <div class="avatar">🔐</div>
-            <h1>Your Name</h1>
-            <p class="tagline">Security Researcher / Penetration Tester</p>
-            <div class="links">
-                <a href="https://github.com/yourusername" target="_blank">GitHub</a>
-                <a href="https://linkedin.com/in/yourusername" target="_blank">LinkedIn</a>
-                <a href="mailto:your@email.com">Email</a>
-            </div>
-        </header>
-
-        <section class="section">
-            <h2>About Me</h2>
-            <p>
-                嗨！我是一名對資訊安全充滿熱情的研究者。專注於 Web 應用程式安全、
-                滲透測試以及漏洞研究。目前正在學習各種攻防技術，並記錄我的學習歷程。
-            </p>
-            <p>
-                我相信分享知識能讓整個社群變得更強大，因此建立了這個網站來記錄我的
-                研究成果和學習筆記。
-            </p>
-        </section>
-
-        <section class="section">
-            <h2>Skills</h2>
-            <div class="skills">
-                <span class="skill-tag">Web Security</span>
-                <span class="skill-tag">Penetration Testing</span>
-                <span class="skill-tag">Python</span>
-                <span class="skill-tag">Linux</span>
-                <span class="skill-tag">Network Security</span>
-                <span class="skill-tag">OWASP Top 10</span>
-                <span class="skill-tag">Burp Suite</span>
-                <span class="skill-tag">Nmap</span>
-            </div>
-        </section>
-
-        <section class="section">
-            <h2>Projects</h2>
-            <div class="project">
-                <h3>🔍 Security Scanner</h3>
-                <p>一個自動化的網站安全掃描工具，整合了多種檢測模組。</p>
-            </div>
-            <div class="project">
-                <h3>📝 Vulnerability Writeups</h3>
-                <p>記錄我在 CTF 比賽和實際滲透測試中發現的漏洞分析。</p>
-            </div>
-            <div class="project">
-                <h3>🛠️ Pentest Toolkit</h3>
-                <p>自己開發的滲透測試輔助腳本集合。</p>
-            </div>
-        </section>
-
-        <section class="section">
-            <h2>Recent Posts</h2>
-            <div class="project">
-                <h3>SQL Injection 攻擊手法詳解</h3>
-                <p>深入解析 SQL Injection 的各種變形與防禦方式。</p>
-            </div>
-            <div class="project">
-                <h3>如何開始學習滲透測試</h3>
-                <p>給新手的滲透測試學習路線圖與資源推薦。</p>
-            </div>
-        </section>
-
-        <footer>
-            <p>© 2025 Your Name. Built with ❤️ and hosted on GitHub Pages.</p>
-        </footer>
+  <!-- I 選擇牌數 -->
+  <section class="panel" id="s1" aria-labelledby="h1a">
+    <div class="plate" aria-hidden="true">I</div>
+    <h2 id="h1a" tabindex="-1">選擇牌數</h2>
+    <p class="lead">要抽幾張牌？</p>
+    <fieldset class="opts" id="opts">
+      <legend class="sr">牌數</legend>
+      <label class="opt tile"><input type="radio" name="cnt" value="3" checked><span class="big">3</span><span class="unit">張</span></label>
+      <label class="opt tile"><input type="radio" name="cnt" value="5"><span class="big">5</span><span class="unit">張</span></label>
+      <label class="opt tile"><input type="radio" name="cnt" value="7"><span class="big">7</span><span class="unit">張</span></label>
+      <div class="opt custom" id="optCustom">
+        <label class="clabel"><input type="radio" name="cnt" value="custom" id="rCustom"><span>自訂</span></label>
+        <div class="stepper">
+          <button type="button" id="minus" aria-label="減少一張">&minus;</button>
+          <input type="text" id="num" inputmode="numeric" pattern="[0-9]*" autocomplete="off" value="1" aria-label="自訂張數">
+          <button type="button" id="plus" aria-label="增加一張">+</button>
+          <span class="unit">張</span>
+        </div>
+      </div>
+    </fieldset>
+    <p class="note" id="capNote" role="status"></p>
+    <div class="actions">
+      <button type="button" class="btn" id="ok1">確定</button>
     </div>
-</body>
-</html>
+  </section>
+
+  <!-- II 洗牌 -->
+  <section class="panel" id="s2" aria-labelledby="h2a" hidden>
+    <div class="plate" aria-hidden="true">II</div>
+    <h2 id="h2a" tabindex="-1">洗牌</h2>
+    <p class="lead">想洗幾次都可以，滿意後按確定。</p>
+    <div class="deck" id="deck" aria-hidden="true"></div>
+    <p class="count" role="status">已洗牌 <b id="shufCount">0</b> 次</p>
+    <p class="rule">78 張牌，每張牌只會以正位或逆位其中一種出現</p>
+    <div class="actions two">
+      <button type="button" class="btn ghost" id="shuffleBtn">洗牌</button>
+      <button type="button" class="btn" id="ok2">確定</button>
+    </div>
+  </section>
+
+  <!-- III 切牌 -->
+  <section class="panel" id="s3" aria-labelledby="h3a" hidden>
+    <div class="plate" aria-hidden="true">III</div>
+    <h2 id="h3a" tabindex="-1">切牌</h2>
+    <p class="lead">專心想著你的問題，覺得時機到了就按停。</p>
+    <div class="spin" id="spin"><span id="spinNum" aria-hidden="true">1</span></div>
+    <div class="actions">
+      <button type="button" class="btn" id="stopBtn">停</button>
+    </div>
+    <p class="cut-msg" id="cutMsg" role="status"></p>
+  </section>
+
+  <!-- IV 抽牌 -->
+  <section class="panel" id="s4" aria-labelledby="h4a" hidden>
+    <div class="plate" aria-hidden="true">IV</div>
+    <h2 id="h4a" tabindex="-1">抽牌</h2>
+    <p class="lead" id="drawLead"></p>
+    <p class="recap" id="recap"></p>
+    <div class="actions">
+      <button type="button" class="btn" id="drawBtn">抽牌</button>
+      <button type="button" class="btn ghost" id="copyBtn" disabled>一鍵複製</button>
+    </div>
+    <p class="note" id="copyStatus" role="status"></p>
+    <textarea class="copybox" id="copyBox" rows="8" readonly hidden aria-label="牌陣文字"></textarea>
+    <ol class="spread" id="spread"></ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- 78 張牌 ---------- */
+  var MAJOR = [
+    ['愚者','The Fool'],['魔術師','The Magician'],['女祭司','The High Priestess'],['皇后','The Empress'],
+    ['皇帝','The Emperor'],['教皇','The Hierophant'],['戀人','The Lovers'],['戰車','The Chariot'],
+    ['力量','Strength'],['隱者','The Hermit'],['命運之輪','Wheel of Fortune'],['正義','Justice'],
+    ['倒吊人','The Hanged Man'],['死神','Death'],['節制','Temperance'],['惡魔','The Devil'],
+    ['高塔','The Tower'],['星星','The Star'],['月亮','The Moon'],['太陽','The Sun'],
+    ['審判','Judgement'],['世界','The World']
+  ];
+  var SUITS = [['權杖','Wands'],['聖杯','Cups'],['寶劍','Swords'],['錢幣','Pentacles']];
+  var RANKS = [
+    ['王牌','Ace'],['二','Two'],['三','Three'],['四','Four'],['五','Five'],['六','Six'],['七','Seven'],
+    ['八','Eight'],['九','Nine'],['十','Ten'],['侍者','Page'],['騎士','Knight'],['皇后','Queen'],['國王','King']
+  ];
+  var CARDS = [];
+  MAJOR.forEach(function (m) { CARDS.push({ zh: m[0], en: m[1] }); });
+  SUITS.forEach(function (s) {
+    RANKS.forEach(function (r) { CARDS.push({ zh: s[0] + r[0], en: r[1] + ' of ' + s[1] }); });
+  });
+  var TOTAL = CARDS.length; // 78
+
+  /* ---------- 隨機與牌組運算 ---------- */
+  function rand(n) { // 0 .. n-1，無偏差
+    try {
+      var buf = new Uint32Array(1);
+      var max = Math.floor(0x100000000 / n) * n;
+      do { crypto.getRandomValues(buf); } while (buf[0] >= max);
+      return buf[0] % n;
+    } catch (e) {
+      return Math.floor(Math.random() * n);
+    }
+  }
+  // 每張牌只出現一次（正位或逆位其一）；洗牌時順序與正逆位一起重新打亂
+  function shuffledDeck() {
+    var ids = [], i, j, t;
+    for (i = 0; i < TOTAL; i++) ids.push(i);
+    for (i = TOTAL - 1; i > 0; i--) { j = rand(i + 1); t = ids[i]; ids[i] = ids[j]; ids[j] = t; }
+    return ids.map(function (id) { return { id: id, rev: rand(2) === 1 }; });
+  }
+  // 第 n 張（含）以後的牌移到最前面
+  function cutDeck(deck, n) { return deck.slice(n - 1).concat(deck.slice(0, n - 1)); }
+  function label(c) { var k = CARDS[c.id]; return k.zh + '(' + k.en + ')-' + (c.rev ? '逆位' : '正位'); }
+
+  /* ---------- 狀態 ---------- */
+  var state = { stage: 0, count: 3, draw: 3, deck: [], shuffles: 0, cut: 0, pile: [], drawn: [], run: 0 };
+  var timers = [];
+  var spinTimer = null, shown = 1;
+  var $ = function (id) { return document.getElementById(id); };
+  var stageIds = ['s1', 's2', 's3', 's4'];
+  var stepEls = document.querySelectorAll('#steps li');
+  var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+  function later(fn, ms) { var id = setTimeout(fn, ms); timers.push(id); return id; }
+  function stopSpin() { if (spinTimer) { clearInterval(spinTimer); spinTimer = null; } }
+
+  function show(n) {
+    state.stage = n;
+    stageIds.forEach(function (id, i) { $(id).hidden = i !== n; });
+    Array.prototype.forEach.call(stepEls, function (li, i) {
+      li.classList.toggle('done', i < n);
+      if (i === n) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+    });
+    $('restart').hidden = n === 0;
+    resetConfirm();
+    var h = $(stageIds[n]).querySelector('h2');
+    try { h.focus({ preventScroll: true }); } catch (e) {}
+    try { window.scrollTo(0, 0); } catch (e) {}
+  }
+
+  /* ---------- I 選擇牌數 ---------- */
+  var numEl = $('num'), rCustom = $('rCustom');
+  function parseCustom() {
+    var v = parseInt(numEl.value.replace(/\D/g, ''), 10);
+    if (!isFinite(v) || v < 1) v = 1;
+    if (v > Number.MAX_SAFE_INTEGER) v = Number.MAX_SAFE_INTEGER;
+    return v;
+  }
+  function currentCount() {
+    var r = document.querySelector('input[name=cnt]:checked');
+    return r.value === 'custom' ? parseCustom() : parseInt(r.value, 10);
+  }
+  function syncOpts() {
+    Array.prototype.forEach.call(document.querySelectorAll('.opt'), function (o) {
+      o.classList.toggle('sel', o.querySelector('input').checked);
+    });
+    var c = currentCount();
+    $('capNote').textContent = c > TOTAL
+      ? '牌組只有 ' + TOTAL + ' 張，牌不會重複抽出，所以最多會抽出 ' + TOTAL + ' 張。'
+      : '';
+  }
+  $('opts').addEventListener('change', syncOpts);
+  numEl.addEventListener('input', function () {
+    numEl.value = numEl.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
+    rCustom.checked = true; syncOpts();
+  });
+  numEl.addEventListener('focus', function () { rCustom.checked = true; syncOpts(); });
+  numEl.addEventListener('blur', function () { numEl.value = String(parseCustom()); syncOpts(); });
+
+  function step(d) {
+    var v = parseCustom() + d;
+    if (v < 1) v = 1;
+    if (v > Number.MAX_SAFE_INTEGER) v = Number.MAX_SAFE_INTEGER;
+    numEl.value = String(v);
+    rCustom.checked = true; syncOpts();
+  }
+  // 按住可連續加減（鍵盤用 click）
+  function bindStep(btn, d) {
+    var holdT = null, holdI = null;
+    function stop() { clearTimeout(holdT); clearInterval(holdI); holdT = holdI = null; }
+    btn.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      step(d);
+      holdT = setTimeout(function () { holdI = setInterval(function () { step(d); }, 70); }, 400);
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) { btn.addEventListener(ev, stop); });
+    btn.addEventListener('click', function (e) { if (e.detail === 0) step(d); });
+    btn.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  }
+  bindStep($('minus'), -1);
+  bindStep($('plus'), 1);
+
+  $('ok1').addEventListener('click', function () {
+    state.count = currentCount();
+    state.draw = Math.min(state.count, TOTAL);
+    enterShuffle();
+  });
+
+  /* ---------- II 洗牌 ---------- */
+  var deckEl = $('deck');
+  (function buildDeck() {
+    var svg =
+      '<svg viewBox="0 0 112 192" aria-hidden="true">' +
+      '<rect class="bk" width="112" height="192" rx="7"/>' +
+      '<rect class="gl" x="6" y="6" width="100" height="180" rx="4"/>' +
+      '<rect class="gl thin" x="11" y="11" width="90" height="170" rx="2"/>' +
+      '<circle class="gl" cx="56" cy="96" r="31"/>' +
+      '<circle class="gl thin" cx="56" cy="96" r="25"/>' +
+      '<rect class="gl" x="42" y="82" width="28" height="28"/>' +
+      '<rect class="gl" x="42" y="82" width="28" height="28" transform="rotate(45 56 96)"/>' +
+      '<circle class="gf" cx="56" cy="96" r="3.5"/>' +
+      '<path class="gf" d="M56 20l5 6-5 6-5-6z"/>' +
+      '<path class="gf" d="M56 160l5 6-5 6-5-6z"/>' +
+      '</svg>';
+    var html = '';
+    for (var i = 0; i < 7; i++) {
+      html += '<div class="back" style="--i:' + i + ';--tx:' + ((i - 3) * 2) + 'px;--ty:' + ((i - 3) * -1.5) +
+        'px;--r:' + ((i - 3) * 1.2) + 'deg;--sx:' + (i % 2 ? 52 : -52) + 'px">' + svg + '</div>';
+    }
+    deckEl.innerHTML = html;
+  })();
+
+  function enterShuffle() {
+    state.deck = shuffledDeck();   // 一開始就是隨機牌序，不會露出出廠順序
+    state.shuffles = 0;
+    $('shufCount').textContent = '0';
+    deckEl.classList.remove('shuffling');
+    show(1);
+  }
+  $('shuffleBtn').addEventListener('click', function () {
+    state.deck = shuffledDeck();
+    state.shuffles++;
+    $('shufCount').textContent = String(state.shuffles);
+    deckEl.classList.remove('shuffling');
+    void deckEl.offsetWidth;
+    deckEl.classList.add('shuffling');
+  });
+  $('ok2').addEventListener('click', enterCut);
+
+  /* ---------- III 切牌 ---------- */
+  var spinBox = $('spin'), spinNum = $('spinNum'), stopBtn = $('stopBtn'), cutMsg = $('cutMsg');
+  function enterCut() {
+    show(2);
+    stopSpin();
+    spinBox.classList.remove('locked');
+    stopBtn.disabled = false;
+    cutMsg.textContent = '';
+    spinTimer = setInterval(function () {
+      var n;
+      do { n = rand(TOTAL) + 1; } while (n === shown);
+      shown = n;
+      spinNum.textContent = String(n);
+    }, reduceMotion ? 220 : 55);
+  }
+  stopBtn.addEventListener('click', function () {
+    if (!spinTimer) return;
+    stopSpin();
+    stopBtn.disabled = true;
+    var n = shown;
+    state.cut = n;
+    state.deck = cutDeck(state.deck, n);
+    spinBox.classList.add('locked');
+    cutMsg.textContent = '停在 ' + n + '。第 ' + n + ' 張起的牌已全部移到最前面，形成新的牌序。';
+    var run = state.run;
+    later(function () { if (state.run === run && state.stage === 2) enterDraw(); }, 1500);
+  });
+
+  /* ---------- IV 抽牌 ---------- */
+  var drawBtn = $('drawBtn'), copyBtn = $('copyBtn'), spreadEl = $('spread');
+  var copyTimer = null;
+  function enterDraw() {
+    state.pile = state.deck.slice();
+    state.drawn = [];
+    spreadEl.innerHTML = '';
+    $('drawLead').textContent = '請抽出 ' + state.draw + ' 張牌';
+    $('recap').textContent = '切牌點：第 ' + state.cut + ' 張' +
+      (state.count > TOTAL ? '・你選了 ' + state.count + ' 張，牌組只有 ' + TOTAL + ' 張' : '');
+    drawBtn.disabled = false;
+    drawBtn.textContent = '抽牌';
+    copyBtn.disabled = true;
+    copyBtn.classList.add('ghost');
+    copyBtn.textContent = '一鍵複製';
+    $('copyStatus').textContent = '';
+    $('copyBox').hidden = true;
+    show(3);
+  }
+  drawBtn.addEventListener('click', function () {
+    var N = state.draw, i;
+    drawBtn.disabled = true;
+    drawBtn.textContent = '抽牌中…';
+    for (i = 0; i < N; i++) state.drawn.push(state.pile.shift()); // 依序抽出，不放回
+    var delay = Math.max(25, Math.min(320, Math.floor(2500 / N)));
+    state.drawn.forEach(function (c, idx) {
+      later(function () {
+        var k = CARDS[c.id];
+        var li = document.createElement('li');
+        li.innerHTML = '<div class="row"><span class="nm"><span class="zh">' + k.zh +
+          '</span> <span class="en">(' + k.en + ')</span></span><span class="pos' + (c.rev ? ' rev' : '') +
+          '">' + (c.rev ? '逆位' : '正位') + '</span></div>';
+        spreadEl.appendChild(li);
+        if (idx === N - 1) {
+          drawBtn.textContent = '已抽出 ' + N + ' 張';
+          copyBtn.disabled = false;
+          copyBtn.classList.remove('ghost');
+          $('copyStatus').textContent = '已抽出 ' + N + ' 張牌，可以一鍵複製。';
+        }
+      }, idx * delay);
+    });
+  });
+
+  function spreadText() {
+    return '請根據以下塔羅牌牌陣，為我解讀問題\n問題：\n牌陣：\n' +
+      state.drawn.map(function (c, i) { return (i + 1) + '. ' + label(c); }).join('\n');
+  }
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    return ok;
+  }
+  copyBtn.addEventListener('click', function () {
+    if (!state.drawn.length) return;
+    var text = spreadText();
+    var done = function (ok) {
+      clearTimeout(copyTimer);
+      if (ok) {
+        $('copyBox').hidden = true;
+        $('copyStatus').textContent = '已複製，貼到 AI 對話框後，在「問題：」後面寫上你的問題。';
+        copyBtn.textContent = '已複製';
+        copyTimer = setTimeout(function () { copyBtn.textContent = '一鍵複製'; }, 2000);
+      } else {
+        var box = $('copyBox');
+        box.value = text; box.hidden = false; box.focus(); box.select();
+        $('copyStatus').textContent = '這個環境不允許自動複製，請在下方文字框全選後手動複製。';
+      }
+    };
+    var p;
+    try { p = navigator.clipboard.writeText(text); } catch (e) { p = Promise.reject(e); }
+    p.then(function () { done(true); }, function () { done(legacyCopy(text)); });
+  });
+
+  /* ---------- 重新開始（需點兩次確認） ---------- */
+  var restartBtn = $('restart'), rcTimer = null;
+  function resetConfirm() {
+    clearTimeout(rcTimer);
+    restartBtn.removeAttribute('data-armed');
+    restartBtn.textContent = '重新開始';
+  }
+  restartBtn.addEventListener('click', function () {
+    if (!restartBtn.hasAttribute('data-armed')) {
+      restartBtn.setAttribute('data-armed', '1');
+      restartBtn.textContent = '再按一次確認重新開始';
+      rcTimer = setTimeout(resetConfirm, 3000);
+      return;
+    }
+    state.run++;
+    clearTimers();
+    stopSpin();
+    clearTimeout(copyTimer);
+    state.deck = []; state.pile = []; state.drawn = []; state.cut = 0;
+    spreadEl.innerHTML = '';
+    show(0);
+  });
+
+  syncOpts();
+  show(0);
+})();
+</script>
+
+</body></html>
