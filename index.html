@@ -68,7 +68,7 @@ body{
 .linkbtn{border:0;background:none;color:var(--muted);font:inherit;font-size:.875rem;min-height:40px;padding:0 4px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .linkbtn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .steps{display:flex;justify-content:center;gap:6px;list-style:none;margin:0;padding:0;font-family:var(--font-display)}
-.steps li{min-width:2.6rem;text-align:center;padding:2px 6px;border-bottom:2px solid transparent;color:var(--muted);font-size:1rem;letter-spacing:.08em}
+.steps li{min-width:2.4rem;text-align:center;padding:2px 4px;border-bottom:2px solid transparent;color:var(--muted);font-size:1rem;letter-spacing:.08em}
 .steps li.done{color:var(--gold)}
 .steps li[aria-current="step"]{color:var(--ink);border-bottom-color:var(--gold)}
 
@@ -86,7 +86,7 @@ body{
 .panel h2:focus{outline:none}
 .lead{text-align:center;color:var(--muted);margin:0 0 18px;text-wrap:balance}
 
-/* step 1 */
+/* step I */
 .opts{border:0;padding:0;margin:0;min-width:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .opt{border:1px solid var(--line);border-radius:4px;background:var(--surface);position:relative}
@@ -115,7 +115,7 @@ body{
 .btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .btn:active:not(:disabled){transform:translateY(1px)}
 
-/* step 2: deck */
+/* step II: deck */
 .deck{position:relative;width:100%;height:216px;margin-top:4px;overflow:hidden}
 .back{position:absolute;left:50%;top:12px;width:112px;height:192px;margin-left:-56px;transform:translate(var(--tx),var(--ty)) rotate(var(--r));filter:drop-shadow(0 3px 5px var(--shadow))}
 .back svg{display:block;width:100%;height:100%}
@@ -133,15 +133,20 @@ body{
 .count b{font-family:var(--font-display);font-weight:400;font-size:1.4rem;color:var(--ink);font-variant-numeric:tabular-nums}
 .rule{text-align:center;font-size:.85rem;color:var(--muted);margin:4px 0 0}
 
-/* step 3: cut */
+/* step III: question */
+.qbox{display:block;width:100%;min-height:9rem;padding:12px 14px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);font:inherit;line-height:1.6;resize:vertical}
+.qbox:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-color:var(--gold)}
+.qbox::placeholder{color:var(--muted)}
+
+/* step IV: cut */
 .spin{display:grid;place-items:center;width:11rem;max-width:100%;height:7rem;margin:6px auto 0;background:var(--surface);border:1px solid var(--gold);border-radius:4px;box-shadow:inset 0 0 0 4px var(--surface),inset 0 0 0 5px var(--line)}
 .spin span{font-family:var(--font-display);font-size:3.6rem;line-height:1;font-variant-numeric:tabular-nums}
 .spin.locked{border-width:2px}
 .spin.locked span{color:var(--gold)}
 .cut-msg{text-align:center;min-height:3.2em;margin:14px 0 0;color:var(--muted);text-wrap:balance}
 
-/* step 4: draw */
-.recap{text-align:center;color:var(--muted);font-size:.875rem;margin:-10px 0 14px}
+/* step V: draw */
+.recap{text-align:center;color:var(--muted);font-size:.875rem;margin:-10px 0 14px;overflow-wrap:anywhere;white-space:pre-line}
 .spread{margin:20px 0 0;padding-inline-start:2.4rem}
 .spread:empty{display:none}
 .spread li{padding:10px 0;border-bottom:1px solid var(--line);animation:rise .25s ease-out both}
@@ -173,6 +178,7 @@ body{
     <li aria-label="第 2 步">II</li>
     <li aria-label="第 3 步">III</li>
     <li aria-label="第 4 步">IV</li>
+    <li aria-label="第 5 步">V</li>
   </ol>
 
   <!-- I 選擇牌數 -->
@@ -215,10 +221,22 @@ body{
     </div>
   </section>
 
-  <!-- III 切牌 -->
+  <!-- III 輸入問題 -->
   <section class="panel" id="s3" aria-labelledby="h3a" hidden>
     <div class="plate" aria-hidden="true">III</div>
-    <h2 id="h3a" tabindex="-1">切牌</h2>
+    <h2 id="h3a" tabindex="-1">你的問題</h2>
+    <p class="lead">寫下想問的事。也可以留空，直接進入下一步。</p>
+    <label class="sr" for="question">問題</label>
+    <textarea class="qbox" id="question" rows="5" maxlength="500" placeholder="例如：我該不該換工作？"></textarea>
+    <div class="actions">
+      <button type="button" class="btn" id="ok3">確定</button>
+    </div>
+  </section>
+
+  <!-- IV 切牌 -->
+  <section class="panel" id="s4" aria-labelledby="h4a" hidden>
+    <div class="plate" aria-hidden="true">IV</div>
+    <h2 id="h4a" tabindex="-1">切牌</h2>
     <p class="lead">專心想著你的問題，覺得時機到了就按停。</p>
     <div class="spin" id="spin"><span id="spinNum" aria-hidden="true">1</span></div>
     <div class="actions">
@@ -227,18 +245,19 @@ body{
     <p class="cut-msg" id="cutMsg" role="status"></p>
   </section>
 
-  <!-- IV 抽牌 -->
-  <section class="panel" id="s4" aria-labelledby="h4a" hidden>
-    <div class="plate" aria-hidden="true">IV</div>
-    <h2 id="h4a" tabindex="-1">抽牌</h2>
+  <!-- V 抽牌 -->
+  <section class="panel" id="s5" aria-labelledby="h5a" hidden>
+    <div class="plate" aria-hidden="true">V</div>
+    <h2 id="h5a" tabindex="-1">抽牌</h2>
     <p class="lead" id="drawLead"></p>
     <p class="recap" id="recap"></p>
     <div class="actions">
       <button type="button" class="btn" id="drawBtn">抽牌</button>
-      <button type="button" class="btn ghost" id="copyBtn" disabled>一鍵複製</button>
+      <button type="button" class="btn ghost" id="copyBtn" disabled>複製牌陣</button>
+      <button type="button" class="btn ghost" id="copyJsonBtn" disabled>複製 JSON</button>
     </div>
     <p class="note" id="copyStatus" role="status"></p>
-    <textarea class="copybox" id="copyBox" rows="8" readonly hidden aria-label="牌陣文字"></textarea>
+    <textarea class="copybox" id="copyBox" rows="8" readonly hidden aria-label="可複製的文字"></textarea>
     <ol class="spread" id="spread"></ol>
   </section>
 </div>
@@ -246,6 +265,9 @@ body{
 <script>
 (function () {
   'use strict';
+
+  /* 傳到 Google 試算表用的暗號。要和 Apps Script 裡的暗號一模一樣。 */
+  var SHEET_TOKEN = '請改成你的暗號';
 
   /* ---------- 78 張牌 ---------- */
   var MAJOR = [
@@ -290,12 +312,35 @@ body{
   function cutDeck(deck, n) { return deck.slice(n - 1).concat(deck.slice(0, n - 1)); }
   function label(c) { var k = CARDS[c.id]; return k.zh + '(' + k.en + ')-' + (c.rev ? '逆位' : '正位'); }
 
+  /* ---------- 輸出格式 ---------- */
+  function isoLocal(d) { // 例：2026-11-13T10:05:00+08:00
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    var off = -d.getTimezoneOffset(), sign = off >= 0 ? '+' : '-';
+    off = Math.abs(off);
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' +
+      p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()) +
+      sign + p(Math.floor(off / 60)) + ':' + p(off % 60);
+  }
+  function buildSpreadText(question, drawn) {
+    return '請根據以下塔羅牌牌陣，為我解讀問題\n問題：' + question + '\n牌陣：\n' +
+      drawn.map(function (c, i) { return (i + 1) + '. ' + label(c); }).join('\n');
+  }
+  function buildPayload(token, askedAt, question, drawn) {
+    return {
+      token: token,
+      askedAt: isoLocal(askedAt),
+      question: question,
+      cardCount: drawn.length,
+      spread: drawn.map(label)
+    };
+  }
+
   /* ---------- 狀態 ---------- */
-  var state = { stage: 0, count: 3, draw: 3, deck: [], shuffles: 0, cut: 0, pile: [], drawn: [], run: 0 };
+  var state = { stage: 0, count: 3, draw: 3, deck: [], shuffles: 0, cut: 0, pile: [], drawn: [], run: 0, question: '', askedAt: null };
   var timers = [];
   var spinTimer = null, shown = 1;
   var $ = function (id) { return document.getElementById(id); };
-  var stageIds = ['s1', 's2', 's3', 's4'];
+  var stageIds = ['s1', 's2', 's3', 's4', 's5'];
   var stepEls = document.querySelectorAll('#steps li');
   var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -414,12 +459,19 @@ body{
     void deckEl.offsetWidth;
     deckEl.classList.add('shuffling');
   });
-  $('ok2').addEventListener('click', enterCut);
+  $('ok2').addEventListener('click', function () { show(2); });
 
-  /* ---------- III 切牌 ---------- */
+  /* ---------- III 輸入問題 ---------- */
+  var qEl = $('question');
+  $('ok3').addEventListener('click', function () {
+    state.question = qEl.value.trim();   // 可以留空
+    enterCut();
+  });
+
+  /* ---------- IV 切牌 ---------- */
   var spinBox = $('spin'), spinNum = $('spinNum'), stopBtn = $('stopBtn'), cutMsg = $('cutMsg');
   function enterCut() {
-    show(2);
+    show(3);
     stopSpin();
     spinBox.classList.remove('locked');
     stopBtn.disabled = false;
@@ -441,32 +493,37 @@ body{
     spinBox.classList.add('locked');
     cutMsg.textContent = '停在 ' + n + '。第 ' + n + ' 張起的牌已全部移到最前面，形成新的牌序。';
     var run = state.run;
-    later(function () { if (state.run === run && state.stage === 2) enterDraw(); }, 1500);
+    later(function () { if (state.run === run && state.stage === 3) enterDraw(); }, 1500);
   });
 
-  /* ---------- IV 抽牌 ---------- */
-  var drawBtn = $('drawBtn'), copyBtn = $('copyBtn'), spreadEl = $('spread');
-  var copyTimer = null;
+  /* ---------- V 抽牌 ---------- */
+  var drawBtn = $('drawBtn'), copyBtn = $('copyBtn'), copyJsonBtn = $('copyJsonBtn'), spreadEl = $('spread');
+  var copyTimers = {};
+  function resetCopyButtons() {
+    [[copyBtn, '複製牌陣'], [copyJsonBtn, '複製 JSON']].forEach(function (p) {
+      p[0].disabled = true; p[0].classList.add('ghost'); p[0].textContent = p[1];
+    });
+    $('copyStatus').textContent = '';
+    $('copyBox').hidden = true;
+  }
   function enterDraw() {
     state.pile = state.deck.slice();
     state.drawn = [];
     spreadEl.innerHTML = '';
     $('drawLead').textContent = '請抽出 ' + state.draw + ' 張牌';
     $('recap').textContent = '切牌點：第 ' + state.cut + ' 張' +
-      (state.count > TOTAL ? '・你選了 ' + state.count + ' 張，牌組只有 ' + TOTAL + ' 張' : '');
+      (state.count > TOTAL ? '・你選了 ' + state.count + ' 張，牌組只有 ' + TOTAL + ' 張' : '') +
+      (state.question ? '\n問題：' + state.question : '');
     drawBtn.disabled = false;
     drawBtn.textContent = '抽牌';
-    copyBtn.disabled = true;
-    copyBtn.classList.add('ghost');
-    copyBtn.textContent = '一鍵複製';
-    $('copyStatus').textContent = '';
-    $('copyBox').hidden = true;
-    show(3);
+    resetCopyButtons();
+    show(4);
   }
   drawBtn.addEventListener('click', function () {
     var N = state.draw, i;
     drawBtn.disabled = true;
     drawBtn.textContent = '抽牌中…';
+    state.askedAt = new Date();
     for (i = 0; i < N; i++) state.drawn.push(state.pile.shift()); // 依序抽出，不放回
     var delay = Math.max(25, Math.min(320, Math.floor(2500 / N)));
     state.drawn.forEach(function (c, idx) {
@@ -479,18 +536,13 @@ body{
         spreadEl.appendChild(li);
         if (idx === N - 1) {
           drawBtn.textContent = '已抽出 ' + N + ' 張';
-          copyBtn.disabled = false;
-          copyBtn.classList.remove('ghost');
-          $('copyStatus').textContent = '已抽出 ' + N + ' 張牌，可以一鍵複製。';
+          [copyBtn, copyJsonBtn].forEach(function (b) { b.disabled = false; b.classList.remove('ghost'); });
+          $('copyStatus').textContent = '已抽出 ' + N + ' 張牌，可以複製了。';
         }
       }, idx * delay);
     });
   });
 
-  function spreadText() {
-    return '請根據以下塔羅牌牌陣，為我解讀問題\n問題：\n牌陣：\n' +
-      state.drawn.map(function (c, i) { return (i + 1) + '. ' + label(c); }).join('\n');
-  }
   function legacyCopy(text) {
     var ta = document.createElement('textarea');
     ta.value = text;
@@ -503,16 +555,14 @@ body{
     document.body.removeChild(ta);
     return ok;
   }
-  copyBtn.addEventListener('click', function () {
-    if (!state.drawn.length) return;
-    var text = spreadText();
+  function copyText(btn, idleLabel, text, okMsg) {
     var done = function (ok) {
-      clearTimeout(copyTimer);
+      clearTimeout(copyTimers[btn.id]);
       if (ok) {
         $('copyBox').hidden = true;
-        $('copyStatus').textContent = '已複製，貼到 AI 對話框後，在「問題：」後面寫上你的問題。';
-        copyBtn.textContent = '已複製';
-        copyTimer = setTimeout(function () { copyBtn.textContent = '一鍵複製'; }, 2000);
+        $('copyStatus').textContent = okMsg;
+        btn.textContent = '已複製';
+        copyTimers[btn.id] = setTimeout(function () { btn.textContent = idleLabel; }, 2000);
       } else {
         var box = $('copyBox');
         box.value = text; box.hidden = false; box.focus(); box.select();
@@ -522,6 +572,16 @@ body{
     var p;
     try { p = navigator.clipboard.writeText(text); } catch (e) { p = Promise.reject(e); }
     p.then(function () { done(true); }, function () { done(legacyCopy(text)); });
+  }
+  copyBtn.addEventListener('click', function () {
+    if (!state.drawn.length) return;
+    copyText(copyBtn, '複製牌陣', buildSpreadText(state.question, state.drawn),
+      state.question ? '已複製牌陣和問題，貼到 AI 對話框即可。' : '已複製牌陣，貼到 AI 對話框後，在「問題：」後面寫上你的問題。');
+  });
+  copyJsonBtn.addEventListener('click', function () {
+    if (!state.drawn.length) return;
+    var json = JSON.stringify(buildPayload(SHEET_TOKEN, state.askedAt || new Date(), state.question, state.drawn), null, 2);
+    copyText(copyJsonBtn, '複製 JSON', json, '已複製 JSON，回到捷徑執行即可。');
   });
 
   /* ---------- 重新開始（需點兩次確認） ---------- */
@@ -541,9 +601,11 @@ body{
     state.run++;
     clearTimers();
     stopSpin();
-    clearTimeout(copyTimer);
-    state.deck = []; state.pile = []; state.drawn = []; state.cut = 0;
+    Object.keys(copyTimers).forEach(function (k) { clearTimeout(copyTimers[k]); });
+    state.deck = []; state.pile = []; state.drawn = []; state.cut = 0; state.question = ''; state.askedAt = null;
+    qEl.value = '';                 // 問題欄清空
     spreadEl.innerHTML = '';
+    $('copyBox').value = '';
     show(0);
   });
 
